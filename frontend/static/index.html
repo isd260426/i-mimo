@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - I-MIMO Platform</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS Stylesheet -->
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            
+            <!-- Header Section with CSS Landscape -->
+            <div class="card-header-art">
+                <!-- Abstract Elements -->
+                <div class="landscape-element cloud-1"></div>
+                <div class="landscape-element cloud-2"></div>
+                <div class="landscape-element mountain-1"></div>
+                <div class="landscape-element mountain-2"></div>
+                
+                <!-- Text Content -->
+                <div class="header-content">
+                    <h3>Welcome to I-MIMO</h3>
+                    <p>Manage your account securely and access your dashboard.</p>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="card-body-form">
+                <div id="alertContainer" class="alert-container"></div>
+                <div class="form-title">USER LOGIN</div>
+                
+                <form id="loginForm" action="#" method="POST">
+                    
+                    <!-- Username Input -->
+                    <div class="input-group mb-4">
+                        <span class="input-group-text">
+                            <i class="bi bi-person-fill"></i>
+                        </span>
+                        <input type="text" class="form-control" placeholder="Username" required>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="input-group mb-4">
+                        <span class="input-group-text">
+                            <i class="bi bi-lock-fill"></i>
+                        </span>
+                        <input type="password" class="form-control" placeholder="Password" required>
+                        <button class="btn btn-outline-secondary border-0 bg-transparent px-3 text-muted" type="button" id="togglePassword">
+                            <i class="bi bi-eye-slash-fill" id="togglePasswordIcon"></i>
+                        </button>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">
+                                Remember me
+                            </label>
+                        </div>
+                        <a href="#" class="forgot-link">Forgot Password?</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-login">
+                        Login <i class="bi bi-box-arrow-in-right ms-1"></i>
+                    </button>
+
+                </form>
+            </div>
+            
+        </div>
+
+        <!-- Footer Copyright -->
+        <div class="login-footer text-center mt-4">
+            <span class="copyright-text">&copy; 2026 ISD. All Rights Reserved.</span>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Login JS Controller Initializer -->
+    <script type="module" src="js/login.js"></script>
+</body>
+</html>

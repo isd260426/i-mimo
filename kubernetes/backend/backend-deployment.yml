@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: i-mimo-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: i-mimo-backend
+  template:
+    metadata:
+      labels:
+        app: i-mimo-backend
+    spec:
+      containers:
+      - name: i-mimo-backend
+        image: isd260426/i-mimo-backend:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: APP_PORT
+          value: "8080"
+        - name: DB_HOST
+          value: "mysql-service"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_ROOT_PASSWORD
+        - name: DB_NAME
+          value: "i_mimo"
+        - name: MONGO_HOST
+          value: "mongo-service"
+        - name: MONGO_PORT
+          value: "27017"
+        - name: MONGO_USER
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_ROOT_USERNAME
+        - name: MONGO_PASS
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_ROOT_PASSWORD
+        - name: MONGO_DB
+          value: "i_mimo"

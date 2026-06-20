@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: i-mimo-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: i-mimo-frontend
+  template:
+    metadata:
+      labels:
+        app: i-mimo-frontend
+    spec:
+      containers:
+      - name: i-mimo-frontend
+        image: isd260426/i-mimo-frontend:latest
+        ports:
+        - containerPort: 80

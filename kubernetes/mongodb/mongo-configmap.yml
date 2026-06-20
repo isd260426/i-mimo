@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-configmap
+data:
+  # MongoDB engine configurations
+  mongo.conf: |
+    storage:
+      dbPath: /data/db
+    net:
+      bindIp: 0.0.0.0

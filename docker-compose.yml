@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: i-mimo-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: supersecretmysqlpassword
+      MYSQL_DATABASE: i_mimo
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  mongodb:
+    image: mongo:latest
+    container_name: i-mimo-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: supersecretpassword
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: i-mimo-backend
+    ports:
+      - "30080:8080"
+    environment:
+      APP_PORT: "8080"
+      DB_HOST: "mysql"
+      DB_PORT: "3306"
+      DB_USER: "root"
+      DB_PASS: "supersecretmysqlpassword"
+      DB_NAME: "i_mimo"
+      MONGO_HOST: "mongodb"
+      MONGO_PORT: "27017"
+      MONGO_USER: "admin"
+      MONGO_PASS: "supersecretpassword"
+      MONGO_DB: "i_mimo"
+    depends_on:
+      - mysql
+      - mongodb
+
+  frontend:
+    build: ./frontend
+    container_name: i-mimo-frontend
+    ports:
+      - "30081:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql-data:
+  mongo-data:

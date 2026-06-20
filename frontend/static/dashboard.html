@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - I-MIMO Platform</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Custom CSS Stylesheet -->
+    <link rel="stylesheet" href="css/dashboard.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Header Section (Navbar Layout) -->
+    <div class="notika-topbar">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <!-- Brand Logo (ISD Icon + I-MIMO Text) -->
+            <a class="d-flex align-items-center text-decoration-none" href="#">
+                <div class="bg-white p-1 rounded-circle shadow-sm d-flex align-items-center justify-content-center me-2" style="height: 42px; width: 42px; overflow: hidden; transition: transform 0.2s ease;">
+                    <img src="images/isd_logo_icon.png" alt="ISD Icon" style="height: 38px; width: auto; object-fit: contain;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3607/3607444.png'">
+                </div>
+                <h4 class="m-0 align-middle fw-bold text-white" style="font-family: 'Inter', sans-serif; letter-spacing: -0.5px;">I-MIMO</h4>
+            </a>
+
+            <!-- Hamburger Button for Mobile Viewport -->
+            <button class="navbar-toggler border-0 text-white p-2 d-lg-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#notikaNavbarCollapse" aria-controls="notikaNavbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list fs-1 text-white"></i>
+            </button>
+
+            <!-- Desktop Action Controls -->
+            <div class="d-none d-lg-flex align-items-center gap-3">
+                <div class="text-white me-2 d-flex align-items-center topbar-user-info">
+                    <i class="bi bi-person-circle fs-5 me-2 text-white-50"></i>
+                    <div class="lh-sm">
+                        <div class="small text-white-50" style="font-size: 0.75rem;">Welcome,</div>
+                        <div class="fw-bold text-white small" id="topUserGreeting">User</div>
+                    </div>
+                </div>
+                <button class="btn-topbar-action" data-bs-toggle="modal" data-bs-target="#menuMasterModal">
+                    <i class="bi bi-gear-fill me-1"></i> Menu Master
+                </button>
+                <button onclick="handleLogout()" class="btn-topbar-logout">
+                    Logout <i class="bi bi-box-arrow-right ms-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tier 2 (Navigation Tabs menu) -->
+    <div class="notika-nav-bar collapse d-lg-block" id="notikaNavbarCollapse">
+        <div class="container-fluid">
+            <!-- Dynamic Navigation Tabs -->
+            <ul class="notika-nav-tabs" id="navbarMenuContainer">
+                <!-- Loaded Dynamically via JS -->
+            </ul>
+
+            <!-- Mobile Action Controls (visible only inside the collapsed panel on mobile) -->
+            <div class="d-lg-none p-3 border-top border-secondary d-flex flex-column gap-2">
+                <div class="text-white-50 small mb-2 d-flex align-items-center">
+                    <i class="bi bi-person-circle fs-5 me-2"></i>
+                    Welcome, <strong id="topUserGreetingMobile">User</strong>
+                </div>
+                <button class="btn btn-premium btn-sm w-100" data-bs-toggle="modal" data-bs-target="#menuMasterModal">
+                    <i class="bi bi-gear-fill me-1"></i> Menu Master
+                </button>
+                <button onclick="handleLogout()" class="btn btn-premium-outline btn-sm w-100 text-center">
+                    Logout <i class="bi bi-box-arrow-right ms-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tier 3 (Submenu Action Bar) -->
+    <div class="notika-submenu-bar d-none" id="submenu-container-bar">
+        <div class="container-fluid">
+            <!-- Submenu section for Dashboard -->
+            <div class="submenu-content d-none" id="submenu-dashboard">
+                <div class="submenu-content-wrapper align-items-center justify-content-between flex-row">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-secondary small me-2"><i class="bi bi-funnel-fill text-teal me-1"></i>Filter Periode:</span>
+                        <select id="dbFilterMonth" class="form-select form-control-dark d-inline-block w-auto" style="padding: 4px 10px; font-size: 0.85rem;">
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                        <select id="dbFilterYear" class="form-select form-control-dark d-inline-block w-auto" style="padding: 4px 10px; font-size: 0.85rem;">
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026" selected>2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                        </select>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 mt-2 mt-md-0">
+                        <button onclick="downloadReport('excel');" class="btn btn-premium-outline btn-sm px-3">
+                            <i class="bi bi-file-earmark-excel me-1"></i> Excel
+                        </button>
+                        <button onclick="downloadReport('pdf');" class="btn btn-premium-outline btn-sm px-3">
+                            <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+                        </button>
+                        <button onclick="refreshDashboardCharts();" class="btn btn-premium btn-sm px-3">
+                            <i class="bi text-white bi-arrow-clockwise me-1"></i> Refresh Grafik
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submenu section for Database Check -->
+            <div class="submenu-content d-none" id="submenu-database-check">
+                <div class="submenu-content-wrapper align-items-center justify-content-between flex-row">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-secondary small me-2"><i class="bi bi-funnel-fill text-teal me-1"></i>Filter Periode:</span>
+                        <select id="filterMonth" class="form-select form-control-dark d-inline-block w-auto" style="padding: 4px 10px; font-size: 0.85rem;">
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                        <select id="filterYear" class="form-select form-control-dark d-inline-block w-auto" style="padding: 4px 10px; font-size: 0.85rem;">
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026" selected>2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                        </select>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 mt-2 mt-md-0">
+                        <button class="btn btn-premium btn-sm px-3" data-bs-toggle="collapse" data-bs-target="#checklistFormCollapse" onclick="resetChecklistForm();">
+                            <i class="bi text-white bi-plus-circle me-1"></i> Isi Checklist
+                        </button>
+                        <button onclick="loadChecklistGrid();" class="btn btn-premium-outline btn-sm px-3">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Refresh Grid
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Dashboard Container -->
+    <div class="container dashboard-content">
+        
+        <!-- ==================== TAB: DASHBOARD ==================== -->
+        <div id="panel-dashboard" class="tab-content-panel active">
+            <div class="row g-4 mb-4">
+                <div class="col-12">
+                    <h2 class="fw-bold"><i class="bi bi-speedometer2 text-teal me-2"></i>System Dashboard</h2>
+                    <p class="text-secondary mb-0">Visualisasi performa server, alokasi resource VM, dan pemantauan database.</p>
+                </div>
+            </div>
+
+            <!-- Dashboard Charts Grid -->
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="metric-card p-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-activity text-teal me-2"></i>CPU Utilization History (24h)</h5>
+                        <div style="position: relative; height: 300px;">
+                            <canvas id="cpuHistoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="metric-card p-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-memory text-teal me-2"></i>Cluster Memory Allocation</h5>
+                        <div style="position: relative; height: 300px;">
+                            <canvas id="memoryAllocChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="metric-card p-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-hdd-fill text-teal me-2"></i>Physical Server Storage (TB)</h5>
+                        <div style="position: relative; height: 300px;">
+                            <canvas id="storageUsageChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="metric-card p-4">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-arrow-repeat text-teal me-2"></i>Database Replication Status (Master to Slave)</h5>
+                        <div style="position: relative; height: 300px;">
+                            <canvas id="dbReplicationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: DATABASE CHECK ==================== -->
+        <div id="panel-database-check" class="tab-content-panel">
+            <div class="row g-3 g-md-4 mb-4">
+                <div class="col-12">
+                    <h2 class="fw-bold"><i class="bi bi-database-fill text-teal me-2"></i>Database Check Checklist</h2>
+                    <p class="text-secondary mb-0">Daily IT Checklist Database Master & Slave.</p>
+                </div>
+            </div>
+
+            <!-- Form Collapse for Entry/Update Checklist -->
+            <div class="collapse mb-4" id="checklistFormCollapse">
+                <div class="metric-card p-4">
+                    <h5 class="fw-bold mb-3" id="formChecklistTitle"><i class="bi bi-pencil-square text-teal me-2"></i>Pengisian Checklist Harian</h5>
+                    <form id="checklistForm">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="checkDate" class="form-label small text-secondary">Tanggal</label>
+                                <input type="date" class="form-control form-control-dark" id="checkDate" name="check_date" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="serverType" class="form-label small text-secondary">Tipe Server</label>
+                                <select class="form-select form-control-dark" id="serverType" name="server_type" required>
+                                    <option value="master">Database Master</option>
+                                    <option value="slave">Database Slave</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="checkSession" class="form-label small text-secondary">Sesi</label>
+                                <select class="form-select form-control-dark" id="checkSession" name="session" required>
+                                    <option value="pagi">Pagi (Morning)</option>
+                                    <option value="sore">Sore (Afternoon)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="cpuRamStatus" class="form-label small text-secondary">Kondisi CPU & RAM</label>
+                                <select class="form-select form-control-dark" id="cpuRamStatus" name="cpu_ram_status" required>
+                                    <option value="Normal">✓ Normal</option>
+                                    <option value="Warning">⚠ Warning</option>
+                                    <option value="Critical">✗ Critical</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="diskStatus" class="form-label small text-secondary">Status Space Disk</label>
+                                <select class="form-select form-control-dark" id="diskStatus" name="disk_status" required>
+                                    <option value="Normal">✓ Normal</option>
+                                    <option value="Warning">⚠ Warning</option>
+                                    <option value="Critical">✗ Critical</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="replicationStatus" class="form-label small text-secondary">Status Replikasi</label>
+                                <select class="form-select form-control-dark" id="replicationStatus" name="replication_status" required>
+                                    <option value="Active">✓ Active / Normal</option>
+                                    <option value="Lag">⚠ Lag</option>
+                                    <option value="Error">✗ Error</option>
+                                    <option value="N/A">N/A</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="backupStatus" class="form-label small text-secondary">Backup Daily</label>
+                                <select class="form-select form-control-dark" id="backupStatus" name="backup_status" required>
+                                    <option value="Success">✓ Success</option>
+                                    <option value="Failed">✗ Failed</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="checklistNotes" class="form-label small text-secondary">Catatan / Keterangan</label>
+                                <input type="text" class="form-control form-control-dark" id="checklistNotes" name="notes" placeholder="Contoh: Aman, disk terpakai 45%">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <button type="button" class="btn btn-premium-outline px-4" onclick="closeChecklistForm()">Batal</button>
+                            <button type="submit" class="btn btn-premium px-4" id="btnSaveChecklist">Simpan Checklist</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Master Checklist Table Card -->
+            <div class="metric-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold m-0"><i class="bi bi-hdd-stack text-teal me-2"></i>Checklist Database Master</h5>
+                    <span class="badge bg-success">MASTER</span>
+                </div>
+                <div class="table-responsive select-none">
+                    <table class="table table-bordered table-checklist m-0 text-center align-middle" id="masterChecklistGrid">
+                        <thead>
+                            <tr class="thead-dark-cells">
+                                <th style="min-width: 40px;">No</th>
+                                <th style="min-width: 250px;" class="text-start">Parameter</th>
+                                <!-- Generated by JS for days 1-31 -->
+                            </tr>
+                        </thead>
+                        <tbody id="masterChecklistGridBody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Slave Checklist Table Card -->
+            <div class="metric-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold m-0"><i class="bi bi-hdd-network text-teal me-2"></i>Checklist Database Slave</h5>
+                    <span class="badge bg-info text-dark">SLAVE</span>
+                </div>
+                <div class="table-responsive select-none">
+                    <table class="table table-bordered table-checklist m-0 text-center align-middle" id="slaveChecklistGrid">
+                        <thead>
+                            <tr class="thead-dark-cells">
+                                <th style="min-width: 40px;">No</th>
+                                <th style="min-width: 250px;" class="text-start">Parameter</th>
+                                <!-- Generated by JS for days 1-31 -->
+                            </tr>
+                        </thead>
+                        <tbody id="slaveChecklistGridBody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="mt-3 px-2 d-flex flex-wrap gap-4 text-secondary small">
+                <div><strong>Keterangan Status:</strong></div>
+                <div><span class="text-success"><i class="bi bi-check-lg"></i></span> = Normal / Active / Success</div>
+                <div><span class="text-warning"><i class="bi bi-exclamation-triangle-fill"></i></span> = Warning / Lag</div>
+                <div><span class="text-danger"><i class="bi bi-x-lg"></i></span> = Critical / Error / Failed</div>
+                <div><span class="text-muted"><i class="bi bi-dash"></i></span> = Belum Diisi / N/A</div>
+                <div class="ms-auto"><i class="bi bi-info-circle-fill text-teal"></i> Sorot kursor ke cell status untuk melihat detail catatan dan petugas.</div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: VM ==================== -->
+        <div id="panel-vm" class="tab-content-panel">
+            <h2 class="fw-bold mb-3"><i class="bi bi-cpu-fill text-teal me-2"></i>Virtual Machines (VM)</h2>
+            <p class="text-secondary">Kelola alokasi resource hardware dan status operasional node VM.</p>
+            <!-- VM content remains static as in template -->
+            <div class="row g-4 mt-2">
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-secondary uppercase small">Running Node</h6>
+                                <h3 class="fw-bold">12 Node</h3>
+                            </div>
+                            <div class="metric-icon m-0"><i class="bi bi-play-circle-fill text-success"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-secondary uppercase small">CPU Usage Avg</h6>
+                                <h3 class="fw-bold">42.8%</h3>
+                            </div>
+                            <div class="metric-icon m-0"><i class="bi bi-activity text-warning"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-secondary uppercase small">Memory Allocation</h6>
+                                <h3 class="fw-bold">48 GB / 64 GB</h3>
+                            </div>
+                            <div class="metric-icon m-0"><i class="bi bi-memory text-info"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="metric-card p-4">
+                        <h5 class="mb-3">Daftar Virtual Machine Terpasang</h5>
+                        <div class="table-responsive">
+                            <table class="table table-premium m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Nama VM</th>
+                                        <th>IP Address</th>
+                                        <th>Operating System</th>
+                                        <th>CPU</th>
+                                        <th>RAM</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>VM-Docker-Host-01</strong></td>
+                                        <td><code>192.168.10.15</code></td>
+                                        <td>Ubuntu Server 22.04 LTS</td>
+                                        <td>4 Cores</td>
+                                        <td>16 GB</td>
+                                        <td><span class="badge bg-success">Running</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>VM-Web-Prod</strong></td>
+                                        <td><code>192.168.10.16</code></td>
+                                        <td>Debian 12 Bookworm</td>
+                                        <td>8 Cores</td>
+                                        <td>24 GB</td>
+                                        <td><span class="badge bg-success">Running</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>VM-Db-Replica</strong></td>
+                                        <td><code>192.168.10.17</code></td>
+                                        <td>Rocky Linux 9</td>
+                                        <td>4 Cores</td>
+                                        <td>8 GB</td>
+                                        <td><span class="badge bg-danger">Stopped</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: SERVER DETAIL ==================== -->
+        <div id="panel-server-detail" class="tab-content-panel">
+            <h2 class="fw-bold mb-3"><i class="bi bi-hdd-stack-fill text-teal me-2"></i>Server Detail</h2>
+            <p class="text-secondary">Detail spesifikasi node server fisik dan lokasi data center.</p>
+            <div class="row g-4 mt-2">
+                <div class="col-md-6">
+                    <div class="metric-card p-4">
+                        <h5 class="mb-3">Informasi Hardware Server</h5>
+                        <table class="table table-premium mb-0">
+                            <tbody>
+                                <tr>
+                                    <td>Manufacturer / Model</td>
+                                    <td>Dell PowerEdge R750</td>
+                                </tr>
+                                <tr>
+                                    <td>Processor</td>
+                                    <td>2x Intel® Xeon® Silver 4314 (16 Cores, 32 Threads)</td>
+                                </tr>
+                                <tr>
+                                    <td>RAM Terpasang</td>
+                                    <td>128 GB DDR4 ECC Reg</td>
+                                </tr>
+                                <tr>
+                                    <td>Storage Array</td>
+                                    <td>4x 1.92TB SSD Enterprise (RAID 5)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="metric-card p-4">
+                        <h5 class="mb-3">Informasi Lokasi & OS</h5>
+                        <table class="table table-premium mb-0">
+                            <tbody>
+                                <tr>
+                                    <td>Sistem Operasi Host</td>
+                                    <td>Proxmox Virtual Environment (VE) 8.1</td>
+                                </tr>
+                                <tr>
+                                    <td>Lokasi Server</td>
+                                    <td>Data Center Gedung ISD - Jakarta</td>
+                                </tr>
+                                <tr>
+                                    <td>Server Uptime</td>
+                                    <td>45 Hari, 12 Jam, 33 Menit</td>
+                                </tr>
+                                <tr>
+                                    <td>Suhu Rack Server</td>
+                                    <td><span class="text-success"><i class="bi bi-thermometer-half"></i> 21°C</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: SERVER TOTAL ==================== -->
+        <div id="panel-server-total" class="tab-content-panel">
+            <h2 class="fw-bold mb-3"><i class="bi bi-pc-display-horizontal text-teal me-2"></i>Server Total</h2>
+            <p class="text-secondary">Metrik rekapitulasi jumlah node server fisik dan cluster.</p>
+            <div class="row g-4 mt-2">
+                <div class="col-md-3">
+                    <div class="metric-card text-center">
+                        <h6 class="text-secondary uppercase small">Total Cluster</h6>
+                        <h1 class="fw-bold text-teal">2</h1>
+                        <span class="text-muted small">Cluster Aktif</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="metric-card text-center">
+                        <h6 class="text-secondary uppercase small">Physical Server</h6>
+                        <h1 class="fw-bold text-teal">4</h1>
+                        <span class="text-muted small">Server Fisik</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="metric-card text-center">
+                        <h6 class="text-secondary uppercase small">Total VM Created</h6>
+                        <h1 class="fw-bold text-teal">24</h1>
+                        <span class="text-muted small">Virtual Machine</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="metric-card text-center">
+                        <h6 class="text-secondary uppercase small">Storage Capacity</h6>
+                        <h1 class="fw-bold text-teal">5.8 TB</h1>
+                        <span class="text-muted small">Total Storage</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: MAINTENANCE ==================== -->
+        <div id="panel-maintenance" class="tab-content-panel">
+            <h2 class="fw-bold mb-3"><i class="bi bi-tools text-teal me-2"></i>Maintenance Schedule</h2>
+            <p class="text-secondary">Log pemeliharaan server secara berkala dan jadwal mendatang.</p>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="metric-card p-4">
+                        <h5 class="mb-3">Jadwal Maintenance Terdekat</h5>
+                        <div class="table-responsive">
+                            <table class="table table-premium m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Task</th>
+                                        <th>Target Server</th>
+                                        <th>Waktu Eksekusi</th>
+                                        <th>Tipe Maintenance</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Update Kernel & OS Patching</strong></td>
+                                        <td>All Physical Servers</td>
+                                        <td>18 Juni 2026 - 23:00 WIB</td>
+                                        <td>Software Update</td>
+                                        <td><span class="badge bg-warning text-dark">Scheduled</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Backup Database Berkala</strong></td>
+                                        <td>VM-Web-Prod</td>
+                                        <td>Setiap Hari - 01:00 WIB</td>
+                                        <td>Backup System</td>
+                                        <td><span class="badge bg-success">Active</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: ERROR ==================== -->
+        <div id="panel-error" class="tab-content-panel">
+            <h2 class="fw-bold mb-3"><i class="bi bi-exclamation-octagon-fill text-teal me-2"></i>Error & Warning Logs</h2>
+            <p class="text-secondary">Daftar pesan error dan kegagalan yang tercatat pada log sistem server.</p>
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="metric-card p-4">
+                        <h5 class="mb-3">Daftar Peringatan Terbaru</h5>
+                        <div class="table-responsive">
+                            <table class="table table-premium m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Source Node</th>
+                                        <th>Severity</th>
+                                        <th>Log Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>2026-06-16 07:15:30</code></td>
+                                        <td>VM-Web-Prod</td>
+                                        <td><span class="badge bg-warning text-dark">Warning</span></td>
+                                        <td>Memory usage exceeded 90% threshold for 5 minutes.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>2026-06-16 02:44:11</code></td>
+                                        <td>VM-Db-Replica</td>
+                                        <td><span class="badge bg-danger">Critical</span></td>
+                                        <td>Connection to database replication server timed out.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB: MASTER USER ==================== -->
+        <div id="panel-master-user" class="tab-content-panel">
+            <div class="row g-4 mb-4">
+                <div class="col-md-8">
+                    <h2 class="fw-bold"><i class="bi bi-people-fill text-teal me-2"></i>Master User Management</h2>
+                    <p class="text-secondary">Kelola daftar akun administrator yang dapat mengakses dashboard I-MIMO.</p>
+                </div>
+                <div class="col-md-4 text-end align-self-center">
+                    <button onclick="resetUserForm();" class="btn btn-premium" data-bs-toggle="collapse" data-bs-target="#userFormCollapse">
+                        <i class="bi bi-person-plus-fill me-1"></i> Tambah User Baru
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form Collapse for Adding/Editing Users -->
+            <div class="collapse mb-4" id="userFormCollapse">
+                <div class="metric-card p-4">
+                    <h5 class="fw-bold mb-3" id="formUserTitle">Tambah Akun Admin Baru</h5>
+                    <form id="userForm">
+                        <input type="hidden" id="userId" name="id" value="">
+                        <input type="hidden" id="userAction" name="action" value="add">
+                        
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="userName" class="form-label small text-secondary">Nama Lengkap</label>
+                                <input type="text" class="form-control form-control-dark" id="userName" name="name" placeholder="Contoh: Budi Santoso" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="userUsername" class="form-label small text-secondary">Username</label>
+                                <input type="text" class="form-control form-control-dark" id="userUsername" name="username" placeholder="Contoh: budi_s" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="userPassword" class="form-label small text-secondary" id="labelUserPassword">Password</label>
+                                <input type="password" class="form-control form-control-dark" id="userPassword" name="password" placeholder="Minimal 6 karakter" required>
+                                <span class="text-muted small d-none" id="helpUserPassword">Kosongkan jika tidak ingin mengubah password.</span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2 mt-3">
+                            <button type="button" class="btn btn-premium-outline px-4" onclick="closeUserForm()">Batal</button>
+                            <button type="submit" class="btn btn-premium px-4" id="btnSaveUser">Simpan User</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- User Data Table -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="metric-card p-4">
+                        <h5 class="mb-3">Daftar Akun Administrator</h5>
+                        <div class="table-responsive">
+                            <table class="table table-premium m-0">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Lengkap</th>
+                                        <th>Username</th>
+                                        <th>Tanggal Dibuat</th>
+                                        <th class="text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <!-- Loaded Dynamically via API -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer Copyright -->
+    <div class="dashboard-footer text-center pb-4 mt-3">
+        <span class="copyright-text">&copy; 2026 ISD. All Rights Reserved.</span>
+    </div>
+
+    <!-- ==================== MODAL: MENU MASTER ==================== -->
+    <div class="modal fade" id="menuMasterModal" tabindex="-1" aria-labelledby="menuMasterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content modal-content-dark">
+                <div class="modal-header modal-header-dark d-flex justify-content-between align-items-center">
+                    <h5 class="modal-title fw-bold" id="menuMasterModalLabel">
+                        <i class="bi bi-gear-fill text-teal me-2"></i>Menu Master Settings
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row g-4">
+                        <!-- Form Manage/Add Menu -->
+                        <div class="col-md-5">
+                            <div class="card p-3 border-0" style="background-color: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid var(--border-dark) !important;">
+                                <h6 class="fw-bold mb-3" id="formMenuTitle">Tambah Menu Baru</h6>
+                                <form id="menuForm">
+                                    <input type="hidden" id="menuId" name="id" value="">
+                                    <input type="hidden" id="menuAction" name="action" value="add">
+
+                                    <div class="mb-3">
+                                        <label for="menuName" class="form-label small text-secondary">Nama Menu</label>
+                                        <input type="text" class="form-control form-control-dark" id="menuName" name="name" placeholder="Contoh: Database Check" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="menuUrl" class="form-label small text-secondary">URL / Hash Link</label>
+                                        <input type="text" class="form-control form-control-dark" id="menuUrl" name="url" placeholder="Contoh: #database-check (Kosongkan untuk auto-hash)">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="menuIcon" class="form-label small text-secondary">Bootstrap Icon Class</label>
+                                        <input type="text" class="form-control form-control-dark" id="menuIcon" name="icon" placeholder="Contoh: bi-database-fill">
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-6">
+                                            <label for="menuOrder" class="form-label small text-secondary">Nomor Urutan</label>
+                                            <input type="number" class="form-control form-control-dark" id="menuOrder" name="order_no" value="1" min="1" required>
+                                        </div>
+                                        <div class="col-6">
+                                            <label for="menuActive" class="form-label small text-secondary">Status</label>
+                                            <select class="form-select form-control-dark" id="menuActive" name="is_active">
+                                                <option value="1">Aktif</option>
+                                                <option value="0">Non-Aktif</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-premium w-100" id="btnSaveMenu">Simpan</button>
+                                        <button type="button" class="btn btn-premium-outline d-none" id="btnCancelEdit" onclick="resetMenuForm()">Batal</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Menu Table List -->
+                        <div class="col-md-7">
+                            <h6 class="fw-bold mb-3">Daftar Menu Saat Ini</h6>
+                            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                <table class="table table-premium align-middle m-0" id="menusTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama</th>
+                                            <th>Urutan</th>
+                                            <th>Status</th>
+                                            <th class="text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="menusTableBody">
+                                        <!-- Loaded Dynamically via API -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Modularized JavaScript Modules -->
+    <script src="js/dashboard.js"></script>
+    <script src="js/database_check.js"></script>
+    <script src="js/master_user.js"></script>
+    <script src="js/menu_master.js"></script>
+</body>
+</html>
