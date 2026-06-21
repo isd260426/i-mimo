@@ -55,7 +55,7 @@ BACKEND_REPLICAS=$(kubectl get deployment i-mimo-backend -o jsonpath='{.status.r
 BACKEND_READY_REPLICAS=$(kubectl get deployment i-mimo-backend -o jsonpath='{.status.readyReplicas}' 2>/dev/null || echo "0")
 if [ "$BACKEND_REPLICAS" -gt 0 ] && [ "$BACKEND_REPLICAS" -eq "$BACKEND_READY_REPLICAS" ]; then
     # Verify API response
-    if curl -s -m 3 http://10.10.43.105:30200/api/v1/health &> /dev/null; then
+    if curl -s -m 3 http://IP_SERVER:30200/api/v1/health &> /dev/null; then
         BACKEND_READY=true
     fi
 fi
@@ -63,7 +63,7 @@ fi
 # 4. MySQL Ready Check (via Backend API connection status)
 # Since MySQL deployment is skipped, we verify connection readiness from the Backend API's health check endpoint
 if [ "$BACKEND_READY" = true ]; then
-    HEALTH_RESP=$(curl -s -m 3 http://10.10.43.105:30200/api/v1/health || echo "{}")
+    HEALTH_RESP=$(curl -s -m 3 http://IP_SERVER:30200/api/v1/health || echo "{}")
     MYSQL_STATUS=$(echo "$HEALTH_RESP" | jq -r '.services.mysql' 2>/dev/null || echo "DOWN")
     if [ "$MYSQL_STATUS" = "OK" ]; then
         MYSQL_READY=true
@@ -80,7 +80,7 @@ FRONTEND_REPLICAS=$(kubectl get deployment i-mimo-frontend -o jsonpath='{.status
 FRONTEND_READY_REPLICAS=$(kubectl get deployment i-mimo-frontend -o jsonpath='{.status.readyReplicas}' 2>/dev/null || echo "0")
 if [ "$FRONTEND_REPLICAS" -gt 0 ] && [ "$FRONTEND_REPLICAS" -eq "$FRONTEND_READY_REPLICAS" ]; then
     # Verify HTTP response code (should be 200 or 304 or redirect)
-    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -m 3 http://10.10.43.105:30201/ || echo "000")
+    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -m 3 http://IP_SERVER:30201/ || echo "000")
     if [ "$HTTP_CODE" -eq 200 ] || [ "$HTTP_CODE" -eq 304 ]; then
         FRONTEND_READY=true
     fi

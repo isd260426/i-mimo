@@ -1,7 +1,7 @@
 #!/bin/bash
 # install-i-mimo.sh
 # Automated Deployment Script for I-MIMO Platform microservices on Ubuntu 22.04 LTS
-# Target IP: 10.10.43.105
+# Target IP: IP_SERVER
 
 # Exit immediately if a command exits with a non-zero status
 set -e
@@ -324,8 +324,8 @@ kubectl get pvc -A
 echo ""
 echo "------------------------------------------------------------------------"
 echo "URL Akses Layanan:"
-echo "Frontend  : http://10.10.43.105:30201"
-echo "Backend   : http://10.10.43.105:30200"
+echo "Frontend  : http://IP_SERVER:30201"
+echo "Backend   : http://IP_SERVER:30200"
 echo "MySQL     : mysql-service:3306 (External/Skipped Deployment)"
 echo "MongoDB   : mongo-service:27017"
 echo "========================================================================"

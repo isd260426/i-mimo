@@ -1,6 +1,6 @@
 # I-MIMO Platform - Panduan Migrasi & Instalasi Otomatis Microservices
 
-Panduan ini berisi instruksi lengkap untuk mendeploy arsitektur microservices aplikasi **I-MIMO Platform** secara otomatis menggunakan script deployment Bash pada server **Linux Ubuntu 22.04 LTS** dengan IP **10.10.43.105**.
+Panduan ini berisi instruksi lengkap untuk mendeploy arsitektur microservices aplikasi **I-MIMO Platform** secara otomatis menggunakan script deployment Bash pada server **Linux Ubuntu 22.04 LTS** dengan IP **IP_SERVER**.
 
 Arsitektur microservices ini terdiri dari:
 - **Frontend**: Nginx Web Server serving Static HTML/CSS/JS (Exposed via NodePort `30201`).
@@ -152,8 +152,8 @@ Setelah proses deployment berhasil, berikut adalah informasi akses ke layanan:
 
 | Layanan | Protokol / Domain | Keterangan |
 | :--- | :--- | :--- |
-| **Frontend Web** | [http://10.10.43.105:30201](http://10.10.43.105:30201) | Dashboard Interface utama aplikasi |
-| **Backend API** | [http://10.10.43.105:30200](http://10.10.43.105:30200) | REST API Endpoint (Exposed) |
+| **Frontend Web** | [http://IP_SERVER:30201](http://IP_SERVER:30201) | Dashboard Interface utama aplikasi |
+| **Backend API** | [http://IP_SERVER:30200](http://IP_SERVER:30200) | REST API Endpoint (Exposed) |
 | **MongoDB** | `mongo-service:27017` | Koneksi internal cluster (tanpa NodePort) |
 | **MySQL DB** | `mysql-service:3306` | Akses basis data relational (Eksternal) |
 
