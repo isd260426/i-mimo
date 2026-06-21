@@ -9,4 +9,4 @@ spec:
   ports:
     - port: 80
       targetPort: 80
-      nodePort: 30081 # NodePort mapping for external web access
+      nodePort: 30201 # NodePort mapping for external web access

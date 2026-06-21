@@ -10,4 +10,4 @@ spec:
     - name: http
       port: 8080
       targetPort: 8080
-      nodePort: 30080 # NodePort mapping for external UI requests
+      nodePort: 30200 # NodePort mapping for external UI requests

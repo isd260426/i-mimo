@@ -6,7 +6,7 @@
 window.getApiUrl = function(path) {
     const apiHost = window.location.origin;
     if (apiHost.includes('127.0.0.1') || apiHost.includes('localhost')) {
-        return `http://127.0.0.1:30080/api/v1${path}`;
+        return `http://127.0.0.1:30200/api/v1${path}`;
     }
     return `/api/v1${path}`;
 };
@@ -391,10 +391,10 @@ window.downloadReport = function(format) {
     const month = filterM ? filterM.value : new Date().getMonth() + 1;
     const year = filterY ? filterY.value : new Date().getFullYear();
 
-    // Since we separated UI and backend, reports can be downloaded from exporter NodePort (Port 30080)
+    // Since we separated UI and backend, reports can be downloaded from exporter NodePort (Port 30200)
     const apiHost = window.location.origin;
     let exportURL = apiHost.includes('127.0.0.1') || apiHost.includes('localhost')
-        ? `http://127.0.0.1:30080/api/v1/export?format=${format}&month=${month}&year=${year}`
+        ? `http://127.0.0.1:30200/api/v1/export?format=${format}&month=${month}&year=${year}`
         : `/api/v1/export?format=${format}&month=${month}&year=${year}`;
 
     // Append jwt token as query parameter for authentication

@@ -155,7 +155,7 @@ export default class LoginController {
         const apiHost = window.location.origin; // Points to Nginx, which proxies to Backend
         // Or default fallback to local backend NodePort in local dev environment
         const apiURL = apiHost.includes('127.0.0.1') || apiHost.includes('localhost')
-            ? 'http://127.0.0.1:30080/api/v1/auth/login'
+            ? 'http://127.0.0.1:30200/api/v1/auth/login'
             : '/api/v1/auth/login';
 
         const response = await fetch(apiURL, {
